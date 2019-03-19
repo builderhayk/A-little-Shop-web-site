@@ -1,2 +1,1 @@
-# A-little-Shop-web-site
-My steps into php development
+If you want to review this on your computer you need local server... and also you shold insert the database called shop.sql into your phpmyadmin ...
