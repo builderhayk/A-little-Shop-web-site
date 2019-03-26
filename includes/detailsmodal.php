@@ -28,6 +28,7 @@ $size_array = explode(',', $sizestring);
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
+                            <span id="modal_errors" class="col-sm-12 text-center"></span>
                             <div class="col-sm-6">
                                 <div class="center-block">
                                     <img src="<?= $product['image']; ?>" alt="<?= $product['title']; ?>"
@@ -40,21 +41,25 @@ $size_array = explode(',', $sizestring);
                                 <hr>
                                 <p>Price: $<?= $product['price']; ?></p>
                                 <p>Brand: <?= $brand['brand']; ?></p>
-                                <form action="add_cart.php" method="post">
+                                <form action="add_cart.php" method="post" id="add_product_form">
+                                    <input type="hidden" name="product_id" id="product_id" value="<?= $id ;?>">
+                                    <input type="hidden" name="available" id="available" value="">
                                     <div class="form-group">
                                         <div class="col-xs-3">
                                             <label for="quantity">Quantity:</label>
-                                            <input type="text" class="form-control" id="quantity" name="quantity">
+                                            <input type="number" class="form-control" id="quantity" name="quantity"
+                                                   min="0">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="size">Size:</label>
                                         <select name="size" id="size" class="form-control">
+                                            <option value="" selected></option>
                                             <?php foreach ($size_array as $string) {
                                                 $string_array = explode(':', $string);
                                                 $size = $string_array[0];
-                                                $quantity = $string_array[1];
-                                                echo '<option value="' . $size . '">' . $size . '(' . $quantity . ' Available)</option>';
+                                                $available = $string_array[1];
+                                                echo '<option value="' . $size . '" data-available="' . $available . '">' . $size . '(' . $available . ' Available)</option>';
                                             } ?>
                                         </select>
                                         <div class="col-xs-3"></div>
@@ -66,19 +71,26 @@ $size_array = explode(',', $sizestring);
                 </div>
                 <div class="modal-footer">
                     <button class="btn bt-default" onclick="closeModal();">Close</button>
-                    <button class="btn btn-warning" type="submit"><i class="fas fa-shopping-cart"></i> Add To Card
+                    <button class="btn btn-warning" onclick="add_to_cart();return false;" type="submit"><i
+                                class="fas fa-shopping-cart"></i> Add To Card
                     </button>
                 </div>
             </div>
         </div>
     </div>
     <script>
-        function closeModal(){
+        $('#size').change(function () {
+            var available = $('#size option:selected').data("available");
+            $('#available').val(available);
+        });
+
+
+        function closeModal() {
             $('#details-modal').modal('hide');
             setTimeout(function () {
                 $('#details-modal').remove();
                 $('')
-            },500)
+            }, 500)
         };
     </script>
 <?php echo ob_get_clean(); ?>

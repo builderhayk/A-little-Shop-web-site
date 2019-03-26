@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Shop/core/init.php';
-if(!is_logged_in()){
+if (!is_logged_in()) {
     login_error_redirect();
 }
 include "includes/head.php";
@@ -69,8 +69,8 @@ if (isset($_POST) && !empty($_POST)) {
     <?php } else {
         //update database
         $updatesql = "INSERT INTO categories(category,parent) VALUES ('$category','$post_parent')";
-        if(isset($_GET['edit'])){
-            $updatesql="UPDATE categories SET  category ='$category',parent='$post_parent' WHERE id='$edit_id'";
+        if (isset($_GET['edit'])) {
+            $updatesql = "UPDATE categories SET  category ='$category',parent='$post_parent' WHERE id='$edit_id'";
         }
         $db->query($updatesql);
         header('location:categories.php');
@@ -91,75 +91,78 @@ if (isset($_GET['edit'])) {
 ?>
     <h2 class="text-center">Categories</h2>
     <hr>
-    <div class="row">
-        <!--FORM-->
-        <div class="col-md-6">
-            <form action="categories.php<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : '') ?>" method="post"
-                  class="form">
-                <legend><?= ((isset($_GET['edit'])) ? 'Edit' : 'Add a') ?> Category</legend>
-                <div id="errors"></div>
-                <div class="form-group">
-                    <label for="parent">Parent</label>
-                    <select name="parent" id="parent" class="form-control">
-                        <option value="0" <?= (($parent_value == 0) ? ' selected="selected"' : ''); ?>>Parent</option>
-                        <?php while ($parent = mysqli_fetch_assoc($result)): ?>
-                            <option value="<?= $parent['id'] ?>"<?= (($parent_value == $parent['id']) ? ' selected="selected"' : ''); ?>><?= $parent['category']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <input type="text" class="form-control" id="category" name="category"
-                           value="<?= $category_value; ?>">
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-success"
-                           value="<?= ((isset($_GET['edit'])) ? 'Edit' : 'Add a') ?> Category">
-                </div>
-            </form>
-        </div>
-        <!--Category Table-->
-        <div class="col-md-6">
-            <table class="table table-bordered">
-                <thead>
-                <th>Category</th>
-                <th>Parent</th>
-                <th></th>
-                </thead>
-                <tbody>
-                <?php
-                $sql = "SELECT * FROM categories WHERE parent = 0";
-                $result = $db->query($sql);
-                while ($parent = mysqli_fetch_assoc($result)):
-                    $parent_id = (int)$parent['id'];
-                    $sql2 = "SELECT * FROM categories WHERE parent = '$parent_id'";
-                    $cresult = $db->query($sql2)
-                    ?>
-                    <tr class="bg-info">
-                        <td><?= $parent['category']; ?></td>
-                        <td>Parent</td>
-                        <td>
-                            <a href="categories.php?edit=<?= $parent['id'] ?>" class="btn btn-xs btn-info"><i
-                                        class="fas fa-pencil-alt"></i></a>
-                            <a href="categories.php?delete=<?= $parent['id'] ?>" class="btn btn-xs btn-danger"><i
-                                        class="far fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                    <?php while ($child = mysqli_fetch_assoc($cresult)): ?>
-                    <tr class="bg-light">
-                        <td><?= $child['category']; ?></td>
-                        <td><?= $parent['category']; ?></td>
-                        <td>
-                            <a href="categories.php?edit=<?= $child['id'] ?>" class="btn btn-xs btn-info"><i
-                                        class="fas fa-pencil-alt"></i></a>
-                            <a href="categories.php?delete=<?= $child['id'] ?>" class="btn btn-xs btn-danger"><i
-                                        class="far fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
+    <div class="container-fluid">
+        <div class="row">
+            <!--FORM-->
+            <div class="col-md-6">
+                <form action="categories.php<?= ((isset($_GET['edit'])) ? '?edit=' . $edit_id : '') ?>" method="post"
+                      class="form">
+                    <legend><?= ((isset($_GET['edit'])) ? 'Edit' : 'Add a') ?> Category</legend>
+                    <div id="errors"></div>
+                    <div class="form-group">
+                        <label for="parent">Parent</label>
+                        <select name="parent" id="parent" class="form-control">
+                            <option value="0" <?= (($parent_value == 0) ? ' selected="selected"' : ''); ?>>Parent
+                            </option>
+                            <?php while ($parent = mysqli_fetch_assoc($result)): ?>
+                                <option value="<?= $parent['id'] ?>"<?= (($parent_value == $parent['id']) ? ' selected="selected"' : ''); ?>><?= $parent['category']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" class="form-control" id="category" name="category"
+                               value="<?= $category_value; ?>">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success"
+                               value="<?= ((isset($_GET['edit'])) ? 'Edit' : 'Add a') ?> Category">
+                    </div>
+                </form>
+            </div>
+            <!--Category Table-->
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <thead>
+                    <th>Category</th>
+                    <th>Parent</th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $sql = "SELECT * FROM categories WHERE parent = 0";
+                    $result = $db->query($sql);
+                    while ($parent = mysqli_fetch_assoc($result)):
+                        $parent_id = (int)$parent['id'];
+                        $sql2 = "SELECT * FROM categories WHERE parent = '$parent_id'";
+                        $cresult = $db->query($sql2)
+                        ?>
+                        <tr class="bg-info">
+                            <td><?= $parent['category']; ?></td>
+                            <td>Parent</td>
+                            <td>
+                                <a href="categories.php?edit=<?= $parent['id'] ?>" class="btn btn-xs btn-info"><i
+                                            class="fas fa-pencil-alt"></i></a>
+                                <a href="categories.php?delete=<?= $parent['id'] ?>" class="btn btn-xs btn-danger"><i
+                                            class="far fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <?php while ($child = mysqli_fetch_assoc($cresult)): ?>
+                        <tr class="bg-light">
+                            <td><?= $child['category']; ?></td>
+                            <td><?= $parent['category']; ?></td>
+                            <td>
+                                <a href="categories.php?edit=<?= $child['id'] ?>" class="btn btn-xs btn-info"><i
+                                            class="fas fa-pencil-alt"></i></a>
+                                <a href="categories.php?delete=<?= $child['id'] ?>" class="btn btn-xs btn-danger"><i
+                                            class="far fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                    <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

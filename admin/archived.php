@@ -11,7 +11,7 @@ $sql = "Select * FROM products WHERE deleted = 1";
 $presults = $db->query($sql);
 if (isset($_GET['refresh'])){
     $id=sanitize($_GET['refresh']);
-    $db->query("UPDATE products SET deleted = 0 WHERE id = '$id'");
+    $db->query("UPDATE products SET deleted = 0, featured = 0 WHERE id = '$id'");
     header('Location:archived.php');
 }
 ?>

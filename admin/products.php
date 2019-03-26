@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/shop/core/init.php';
-if(!is_logged_in()){
+if (!is_logged_in()) {
     login_error_redirect();
 }
 include 'includes/head.php';
@@ -8,8 +8,8 @@ include 'includes/navigation.php';
 
 //delete product
 
-if (isset($_GET['delete'])){
-    $id=sanitize($_GET['delete']);
+if (isset($_GET['delete'])) {
+    $id = sanitize($_GET['delete']);
     $db->query("UPDATE products SET deleted = 1 WHERE id = '$id'");
     header('Location:products.php');
 }
@@ -22,7 +22,6 @@ if (isset($_GET['add']) || isset($_GET['edit'])) {
     $brand = ((isset($_POST['brand']) && !empty($_POST['brand'])) ? sanitize($_POST['brand']) : '');
     $parent = ((isset($_POST['parent']) && !empty($_POST['parent'])) ? sanitize($_POST['parent']) : '');
     $category = ((isset($_POST['child'])) && !empty($_POST['child']) ? sanitize($_POST['child']) : '');
-    $price = ((isset($_POST['price']) && !empty($_POST['price'])) ? sanitize($_POST['price']) : '');
     $price = ((isset($_POST['price']) && !empty($_POST['price'])) ? sanitize($_POST['price']) : '');
     $list_price = ((isset($_POST['list_price']) && !empty($_POST['list_price'])) ? sanitize($_POST['list_price']) : '');
     $description = ((isset($_POST['description']) && !empty($_POST['description'])) ? sanitize($_POST['description']) : '');
@@ -69,9 +68,7 @@ if (isset($_GET['add']) || isset($_GET['edit'])) {
         $sizesArray = array();
     }
     if ($_POST) {
-        $dbpath = '';
         $errors = array();
-
         $required = array('title', 'brand', 'price', 'parent', 'child', 'sizes');
         foreach ($required as $field) {
             if ($_POST[$field] == '') {
@@ -79,9 +76,8 @@ if (isset($_GET['add']) || isset($_GET['edit'])) {
                 break;
             }
         }
-        if (isset($_FILES)) {
+        if (!empty($_FILES)) {
             if ($_FILES['photo']['size'] != 0) {
-//          var_dump($_FILES);
                 $photo = $_FILES['photo'];
                 $name = $photo['name'];
                 $nameArray = explode('.', $name);
@@ -116,8 +112,11 @@ if (isset($_GET['add']) || isset($_GET['edit'])) {
             echo display_errors($errors);
         } else {
             //upload file and insert to database
+            if (!empty($_FILES)) {
+                move_uploaded_file($tmpLoc, $uploadPath);
+            }
             $sizesrt = rtrim($sizes, ',');
-            move_uploaded_file($tmpLoc, $uploadPath);
+
             $insertSql = "INSERT INTO products (title,price,list_price,brand,categories,sizes,image,description)
                                         VALUES ('$title','$price','$list_price','$brand','$category','$sizesrt','$dbpath','$description')";
             if (isset($_GET['edit'])) {
@@ -313,6 +312,6 @@ if (isset($_GET['add']) || isset($_GET['edit'])) {
 include 'includes/footer.php'; ?>
 <script>
     $('document').ready(function () {
-            <?=((isset($category))?get_child_options('<?=$category?>'):'');?>
+        get_child_options('<?=$category?>');
     })
 </script>
